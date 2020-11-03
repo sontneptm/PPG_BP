@@ -41,14 +41,14 @@ def text_to_csv():
     print("done")
 
 def ma_filter():
-    file = open('ppg_bp_filterd.csv','a')
+    file = open('ppg_bp_filtered.csv','a')
     whole_data = np.loadtxt("ppg_bp.csv",delimiter=',', dtype=np.float32)
     bp_data = whole_data[:,:2]
     ppg_data = whole_data[:,2:]
 
     for i in range(len(ppg_data)) :
         ppg_pd = pd.Series(ppg_data[i])
-        ppg_data[i] = ppg_pd.rolling(window=5, min_periods=1).mean()
+        ppg_data[i] = ppg_pd.rolling(window=10, min_periods=1).mean()
 
         tmp_list = []
         tmp_list.append(bp_data[i].tolist()[0])
