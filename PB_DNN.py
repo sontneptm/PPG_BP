@@ -11,7 +11,7 @@ import pandas as pd
 xy_data = np.loadtxt("ppg_bp_filtered.csv",delimiter=',', dtype=np.float32)
 
 xd = xy_data[:,2:]
-yd = xy_data[:,1:2]
+yd = xy_data[:,:2]
 
 xd = (xd-xd.min())/(xd.max()-xd.min())
 yd = yd
@@ -33,7 +33,7 @@ with tf.device('GPU:0'):
     model.add(layers.Dense(2048, activation='linear', input_shape=[INPUT_SIZE]))
     model.add(layers.Dense(1024, activation='linear'))
     model.add(layers.Dense(512, activation='linear'))
-    model.add(layers.Dense(1, activation='linear'))
+    model.add(layers.Dense(2, activation='linear'))
 
     model.compile(optimizer=Adam(lr=1.46e-3), loss='mse')
     hist = model.fit(xt, yt, validation_split=0.2, shuffle=True, epochs=EPOCH)
