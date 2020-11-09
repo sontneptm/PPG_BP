@@ -2,23 +2,24 @@ import numpy as np
 import random
 import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.layers import Dropout
 from tensorflow.keras import layers, models
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix
 import matplotlib.pyplot as plt
 import pandas as pd
 
-xy_data = np.loadtxt("ppg_bp_filtered.csv",delimiter=',', dtype=np.float32)
+xy_data = np.loadtxt("ppg_bp_encoded.csv",delimiter=',', dtype=np.float32)
 
 xd = xy_data[:,2:]
 yd = xy_data[:,:2]
 
-xd = (xd-xd.min())/(xd.max()-xd.min())
-yd = yd
+#xd = (xd-xd.min())/(xd.max()-xd.min())
+#yd = yd
 
 #hyper params
 SPLIT_RATE = 0.2
-EPOCH = 1000
+EPOCH = 100
 INPUT_SIZE = len(xd[0])
 
 xt, xv, yt, yv = train_test_split(xd, yd, test_size = SPLIT_RATE, random_state = 123)
@@ -30,10 +31,12 @@ yv = np.array(yv)
 with tf.device('GPU:0'):
     tf.keras.initializers.RandomNormal(mean=0.0, stddev=0.05, seed=0)
     model = models.Sequential()
-    model.add(layers.Dense(2048, activation='linear', input_shape=[INPUT_SIZE]))
-    model.add(layers.Dense(1024, activation='linear'))
-    model.add(layers.Dense(512, activation='linear'))
-    model.add(layers.Dense(2, activation='linear'))
+    model.add(layers.Dense(500, activation=tf.nn.swish, input_shape=[INPUT_SIZE]))
+    model.add(layers.Dense(500, activation=tf.nn.swish))
+    model.add(layers.Dense(500, activation=tf.nn.swish))
+    model.add(layers.Dense(500, activation=tf.nn.swish))
+    model.add(layers.Dense(500, activation=tf.nn.swish))
+    model.add(layers.Dense(2, activation=tf.nn.swish))
 
     model.compile(optimizer=Adam(lr=1.46e-3), loss='mse')
     hist = model.fit(xt, yt, validation_split=0.2, shuffle=True, epochs=EPOCH)

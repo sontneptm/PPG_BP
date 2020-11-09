@@ -59,4 +59,4 @@ def ma_filter():
         file.write(str.format(rtn) + "\n")
 
 if __name__ == '__main__':
-    ma_filter()
+    text_to_csv()
