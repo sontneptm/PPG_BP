@@ -18,8 +18,6 @@ bp_data = whole_data[:,:2]
 ppg_data = whole_data[:,2:]
 ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
 
-xt, xv, yt, yv = train_test_split(ppg_data, bp_data, test_size = SPLIT_RATE, random_state = 123)
-
 # hyper params
 LATENT_DIM = 2
 SPLIT_RATE = 0.2
@@ -30,6 +28,8 @@ GEN_LR = 5.0e-4
 DSC_LR = 1.46e-4
 VALID_STEP = 20
 
+xt, xv, yt, yv = train_test_split(ppg_data, bp_data, test_size = SPLIT_RATE, random_state = 123)
+
 class Encoder(object):
     def __init__(self):
         self.model()
@@ -38,7 +38,7 @@ class Encoder(object):
         model = tf.keras.Sequential(name='Encoder')
 
         # Layer 1
-        model.add(layers.Dense(1024, activation=tf.nn.swish, input_shape=(PPG_LENGTH,1)))
+        model.add(layers.Dense(1024, activation=tf.nn.swish, input_shape=[PPG_LENGTH]))
         model.add(layers.Dense(512, activation=tf.nn.swish))
         model.add(layers.Dense(LATENT_DIM))
 
@@ -53,7 +53,7 @@ class Decoder(object):
         model = tf.keras.Sequential(name='Decoder')
 
         # Layer 1
-        model.add(layers.Dense(512, activation=tf.nn.swish, input_shape=(LATENT_DIM,1)))
+        model.add(layers.Dense(512, activation=tf.nn.swish, input_shape=[LATENT_DIM]))
         model.add(layers.Dense(1024, activation=tf.nn.swish))
         model.add(layers.Dense(PPG_LENGTH, activation='sigmoid'))
 
@@ -68,7 +68,7 @@ class Discriminator(object):
         model = tf.keras.Sequential(name='Discriminator')
 
         # Layer 1
-        model.add(layers.Dense(1024, activation=tf.nn.swish, input_shape=(LATENT_DIM,1)))
+        model.add(layers.Dense(1024, activation=tf.nn.swish, input_shape=[LATENT_DIM]))
         model.add(layers.Dense(1024, activation=tf.nn.swish))
 
         return model
@@ -117,7 +117,7 @@ def train():
         with tf.GradientTape() as gen_tape:
             z_gen = enc(x, training = True)
             #z_gen_input = tf.concat([y, z_gen], axis=-1, name='z_gen_input')
-            z_gen_input= z+_gen
+            z_gen_input= z_gen
 
             dsc_fake = dsc(z_input, training=True)
             loss_gen = -tf.reduce_mean(dsc_fake)
@@ -128,7 +128,7 @@ def train():
     def training_step(x):
         with tf.GradientTape() as ae_tape, tf.GradientTape() as gen_tape, tf.GradientTape() as dsc_tape:
             z = bp_data # real data
-            z_gen = enc(x, training=True)
+            z_gen = enc(np.asmatrix(x), training=True)
 
             #z_input = tf.concat([y,z], axis=-1, name='z_input')
             z_input = z
@@ -221,6 +221,15 @@ def train():
             save_decode_image_array(x_tilde.numpy(), path=os.path.join(graph_path, '{}_generated-{:04d}.png'.format(graph, epoch)))
             ckpt_manager.save(checkpoint_number=epoch)
 
+    save_message = "\tSave model: End of training"
+
+    enc.save_weights(os.path.join(model_path, enc_name))
+    dec.save_weights(os.path.join(model_path, dec_name))
+    dsc.save_weights(os.path.join(model_path, dsc_name))
+
+    # 6-3. Report
+    print("[Epoch: {:04d}] {:.01f} min.".format(EPOCHS, elapsed_time))
+    print(save_message)
     
 
 # end of train() method
