@@ -28,6 +28,7 @@ PPG_LENGTH = len(ppg_data[0])
 AE_LR = 1.46e-3
 GEN_LR = 5.0e-4
 DSC_LR = 1.46e-4
+VALID_STEP = 20
 
 class Encoder(object):
     def __init__(self):
@@ -182,7 +183,7 @@ def train():
     for epoch in range(EPOCHS):
         # train AAE
         num_train = 0
-        for d in ppg_data:
+        for d in xt:
             if num_train % 2 == 0:
                 training_step(d)
             else :
@@ -190,8 +191,35 @@ def train():
                 gen_training_step(d)
             num_train +=1
         
+        # validation
         num_valid = 0
         val_loss_dsc, val_loss_gen, val_loss_ae, val_was_x = [],[],[],[]
+        for d in xv:
+            x_gen, x_bar, loss_dsc, loss_gen, loss_ae, was_x = validation_step(d)
+
+            val_loss_dsc.append(loss_dsc)
+            val_loss_gen.append(loss_gen)
+            val_loss_ae.append(loss_ae)
+            val_was_x.append(was_x)
+
+            num_valid += 1
+
+            if num_valid > VALID_STEP:
+                break
+        
+        elapsed_time = (time.time() - start_time) /60.
+        val_loss_ae = np.mean(np.reshape(val_loss_ae, (-1)))
+        val_loss_dsc = np.mean(np.reshape(val_loss_dsc, (-1)))
+        val_loss_gen = np.mean(np.reshape(val_loss_gen, (-1)))
+        val_was_x = np.mean(np.reshape(val_was_x, (-1)))
+
+        print("[Epoch: {:04d}] {:.01f}m.\tdis: {:.6f}\tgen: {:.6f}\tae: {:.6f}\tw_x: {:.6f}".format(epoch, elapsed_time, val_loss_dis, val_loss_gen, val_loss_ae, val_was_x))
+        
+        if epoch % param.save_frequency == 0 and epoch > 1:
+            save_decode_image_array(x_valid.numpy(), path=os.path.join(graph_path,'{}_original-{:04d}.png'.format(graph, epoch)))
+            save_decode_image_array(x_bar.numpy(), path=os.path.join(graph_path, '{}_decode-{:04d}.png'.format(graph, epoch)))
+            save_decode_image_array(x_tilde.numpy(), path=os.path.join(graph_path, '{}_generated-{:04d}.png'.format(graph, epoch)))
+            ckpt_manager.save(checkpoint_number=epoch)
 
     
 
