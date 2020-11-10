@@ -58,5 +58,7 @@ def ma_filter():
         rtn = str(tmp_list)[1:-1]
         file.write(str.format(rtn) + "\n")
 
+    def data_to_image():
+
 if __name__ == '__main__':
     text_to_csv()

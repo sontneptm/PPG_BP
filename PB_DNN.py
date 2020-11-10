@@ -6,6 +6,7 @@ from tensorflow.keras.layers import Dropout
 from tensorflow.keras import layers, models
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import r2_score
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -19,7 +20,7 @@ yd = xy_data[:,:2]
 
 #hyper params
 SPLIT_RATE = 0.2
-EPOCH = 100
+EPOCH = 1000
 INPUT_SIZE = len(xd[0])
 
 xt, xv, yt, yv = train_test_split(xd, yd, test_size = SPLIT_RATE, random_state = 123)
@@ -31,11 +32,11 @@ yv = np.array(yv)
 with tf.device('GPU:0'):
     tf.keras.initializers.RandomNormal(mean=0.0, stddev=0.05, seed=0)
     model = models.Sequential()
-    model.add(layers.Dense(500, activation=tf.nn.swish, input_shape=[INPUT_SIZE]))
-    model.add(layers.Dense(500, activation=tf.nn.swish))
-    model.add(layers.Dense(500, activation=tf.nn.swish))
-    model.add(layers.Dense(500, activation=tf.nn.swish))
-    model.add(layers.Dense(500, activation=tf.nn.swish))
+    model.add(layers.Dense(1000, activation=tf.nn.swish, input_shape=[INPUT_SIZE]))
+    model.add(layers.Dense(1000, activation=tf.nn.swish))
+    model.add(layers.Dense(1000, activation=tf.nn.swish))
+    model.add(layers.Dense(1000, activation=tf.nn.swish))
+    model.add(layers.Dense(1000, activation=tf.nn.swish))
     model.add(layers.Dense(2, activation=tf.nn.swish))
 
     model.compile(optimizer=Adam(lr=1.46e-3), loss='mse')
@@ -50,3 +51,4 @@ with tf.device('GPU:0'):
         #print(fmt.format(yv[i], pd[i][0], pd[i][1], pd[i][0], pd[i][1]))
         print("실제값 : ", yv[i],"\t", "예측값 :", pd[i])
     
+    print(r2_score(yv, pd))
