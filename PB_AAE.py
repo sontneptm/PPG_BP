@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import time
+from PB_util import gradient_penalty
 from functools import partial
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
@@ -16,6 +17,8 @@ whole_data = np.loadtxt("ppg_bp_filtered.csv",delimiter=',', dtype=np.float32)
 bp_data = whole_data[:,:2]
 ppg_data = whole_data[:,2:]
 ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
+
+xt, xv, yt, yv = train_test_split(ppg_data, bp_data, test_size = SPLIT_RATE, random_state = 123)
 
 # hyper params
 LATENT_DIM = 2
@@ -165,12 +168,19 @@ def train():
         dsc_fake = dsc(z_gen_input, training=False)
 
         real_loss, fake_loss = -tf.reduce_mean(dsc_real), tf.reduce_mean(dsc_fake)
-        gp = gradient_penalty(partial)
+        gp = gradient_penalty(partial(dsc, training=False), z_input, z_gen_input)
+
+        loss_gen = -tf.reduce_mean(dsc_fake)
+        loss_dsc = (real_loss + fake_loss) + gp * 0.1
+        loss_ae = tf.reduce_mean(tf.abs(tf.subtract(x, x_bar)))
+
+        return x_gen, x_bar, loss_dsc.numpy(), loss_gen.numpy(), loss_ae.numpy(), (fake_loss.numpy()-real_loss.numpy())
 
     # do TRAIN
-    """
+
     start_time = time.time()
     for epoch in range(EPOCHS):
+        # train AAE
         num_train = 0
         for d in ppg_data:
             if num_train % 2 == 0:
@@ -179,7 +189,11 @@ def train():
                 gen_training_step(d)
                 gen_training_step(d)
             num_train +=1
-    """
+        
+        num_valid = 0
+        val_loss_dsc, val_loss_gen, val_loss_ae, val_was_x = [],[],[],[]
+
+    
 
 # end of train() method
 
