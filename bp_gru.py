@@ -1,10 +1,11 @@
+import numpy as np
+import tensorflow as tf
 from keras.models import Sequential
 from matplotlib import pyplot as plt
 from keras.layers import Dense, LSTM, GRU
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
-import numpy as np
 from tensorflow.keras.optimizers import Adam
 
 # Open, High, Low, Volume, Close
@@ -24,12 +25,12 @@ x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))  # (4,3,1) reshap
 
 # 2. 모델 구성
 model = Sequential()
-model.add(GRU(100, activation='swish', input_shape=(x_data.shape[1], 1)))
+model.add(GRU(100, activation=tf.nn.swish, input_shape=(x_data.shape[1], 1)))
 # DENSE와 사용법 동일하나 input_shape=(열, 몇개씩잘라작업)
 #model.add(GRU(100))
-model.add(Dense(128, activation='swish'))
-model.add(Dense(256, activation='swish'))
-model.add(Dense(512, activation='swish'))
+model.add(Dense(128, activation=tf.nn.swish))
+model.add(Dense(256, activation=tf.nn.swish))
+model.add(Dense(512, activation=tf.nn.swish))
 model.add(Dense(2))
 model.summary()
 
