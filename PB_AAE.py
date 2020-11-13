@@ -21,11 +21,7 @@ ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
 # hyper params
 LATENT_DIM = 2
 SPLIT_RATE = 0.2
-<<<<<<< HEAD
 EPOCHS = 300
-=======
-EPOCHS = 1000
->>>>>>> parent of 4b97b9b... tmp
 PPG_LENGTH = len(ppg_data[0])
 AE_LR = 1.46e-3
 GEN_LR = 5.0e-5
