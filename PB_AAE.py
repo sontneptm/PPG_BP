@@ -21,11 +21,15 @@ ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
 # hyper params
 LATENT_DIM = 2
 SPLIT_RATE = 0.2
+<<<<<<< HEAD
+EPOCHS = 300
+=======
 EPOCHS = 1000
+>>>>>>> parent of 4b97b9b... tmp
 PPG_LENGTH = len(ppg_data[0])
 AE_LR = 1.46e-3
-GEN_LR = 5.0e-4
-DSC_LR = 1.46e-4
+GEN_LR = 5.0e-5
+DSC_LR = 1.46e-5
 VALID_STEP = 20
 
 xt, xv, yt, yv = train_test_split(ppg_data, bp_data, test_size = SPLIT_RATE, random_state = 123)
@@ -230,7 +234,26 @@ def train():
     # 6-3. Report
     print("[Epoch: {:04d}] {:.01f} min.".format(EPOCHS, elapsed_time))
     print(save_message)
+<<<<<<< HEAD
+    """
+    x_axis = range(len(ppg_data[0]))
+    encoded_val_data = enc(ppg_data).numpy()
+    decoded_val_data = dec(encoded_val_data).numpy()
+    plt.plot(x_axis, decoded_val_data[5])
+    plt.plot(x_axis, ppg_data[5])
+    plt.show()
+    """
+    pd = enc.predict(ppg_data)
+   
+    for i in range(len(ppg_data)):
+        #fmt = '실제값: {1}, 예측값: {2:.5f} {3:.5f}, 정제된값: {4:.0f} {5:.0f}'
+        #print(fmt.format(yv[i], pd[i][0], pd[i][1], pd[i][0], pd[i][1]))
+        print("실제값 : ", bp_data[i],"\t", "예측값 :", pd[i])
     
+    print(r2_score(bp_data, pd))
+=======
+    
+>>>>>>> parent of 4b97b9b... tmp
 
 # end of train() method
 
