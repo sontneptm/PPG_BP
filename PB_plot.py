@@ -18,7 +18,6 @@ def plot_ppg_data2():
 
     plt.plot(x_axis, ppg_data[0])
     plt.show()
-<<<<<<< HEAD
 
 def plot_ppg_data3():
     whole_data = np.loadtxt("ppg_bp_encoded.csv",delimiter=',', dtype=np.float32)
@@ -28,8 +27,6 @@ def plot_ppg_data3():
 
     plt.plot(x_axis, ppg_data[0])
     plt.show()
-=======
->>>>>>> parent of 4b97b9b... tmp
-    
+    S
 if __name__ == "__main__":
     plot_ppg_data3()
