@@ -13,11 +13,11 @@ from tensorflow.keras import layers, models
 whole_data = np.loadtxt("ppg_bp_filtered.csv",delimiter=',', dtype=np.float32)
 bp_data = whole_data[:,:2]
 ppg_data = whole_data[:,2:]
-ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
+#ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
 
 LATENT_DIM = 32
 SPLIT_RATE = 0.2
-EPOCHS = 1000
+EPOCHS = 100
 PPG_LENGTH = len(ppg_data[0])
 checkpoint_path = "ppg_bp_aae/pba.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)

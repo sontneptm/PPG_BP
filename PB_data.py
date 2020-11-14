@@ -119,4 +119,5 @@ def merge_ap_ae():
         file.write(str.format(rtn) + "\n")
 
 if __name__ == '__main__':
-    merge_ap_ae()
+    #merge_ap_ae()
+    ma_filter()
