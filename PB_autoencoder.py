@@ -15,7 +15,7 @@ bp_data = whole_data[:,:2]
 ppg_data = whole_data[:,2:]
 ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
 
-LATENT_DIM = 150
+LATENT_DIM = 32
 SPLIT_RATE = 0.2
 EPOCHS = 1000
 PPG_LENGTH = len(ppg_data[0])
