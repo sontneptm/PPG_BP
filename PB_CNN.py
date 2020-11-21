@@ -7,6 +7,7 @@ from tensorflow.keras.layers import Flatten
 from tensorflow.keras.layers import Conv1D
 from tensorflow.keras.layers import MaxPooling1D
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import r2_score
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -24,7 +25,7 @@ yd = xy_data[:,:2]
 #xd = (xd-xd.min())/(xd.max()-xd.min())
 
 DATA_LEN = len(xd[0])
-EPOCH = 300
+EPOCH = 1000
 SPLIT_RATE = 0.2
 
 xd = xd.reshape(-1,DATA_LEN,1)
@@ -32,21 +33,16 @@ xd = xd.reshape(-1,DATA_LEN,1)
 xt, xv, yt, yv = train_test_split(xd, yd, test_size = SPLIT_RATE, random_state = 123)
 
 model = models.Sequential()
-model.add(Conv1D(filters=128, kernel_size=2, activation=tf.nn.swish, input_shape=(DATA_LEN,1)))
-model.add(MaxPooling1D(pool_size=2))
-model.add(Conv1D(filters=128, kernel_size=2, activation=tf.nn.swish, input_shape=(DATA_LEN,1)))
+model.add(Conv1D(filters=256, kernel_size=2, activation=tf.nn.swish, input_shape=(DATA_LEN,1)))
 model.add(MaxPooling1D(pool_size=2))
 model.add(Flatten())
-model.add(Dense(1000, activation=tf.nn.swish))
-model.add(Dense(1000, activation=tf.nn.swish))
-model.add(Dense(1000, activation=tf.nn.swish))
-model.add(Dense(1000, activation=tf.nn.swish))
-model.add(Dense(1000, activation=tf.nn.swish))
+model.add(Dense(500, activation=tf.nn.swish))
+model.add(Dense(500, activation=tf.nn.swish))
+model.add(Dense(500, activation=tf.nn.swish))
 model.add(Dense(2, activation=tf.nn.swish))
 model.compile(optimizer = 'adam', loss='mse')
 model.summary()
 model.fit(xt, yt, epochs=EPOCH, verbose=2)
-
 
 pd = model.predict(xv)
 
@@ -63,13 +59,15 @@ for i in range(len(yv)) :
     sys_list.append(pd[i][0]-yv[i][0])
     dia_list.append(pd[i][1]-yv[i][1])
 
+print("SBP MAE:",mean_absolute_error(pd[:,0:1], yv[:,0:1]))
+print("DBP MAE:",mean_absolute_error(pd[:,1:2], yv[:,1:2]))
+
 plt.rcParams["figure.figsize"] = (7,5)
 plt.subplot(211)
 plt.title('systolic')
-plt.hist(sys_list, histtype='step', bins=100)
+plt.hist(sys_list, histtype='step', bins=200)
 
 plt.subplot(212)
 plt.title('diastolic')
-plt.hist(dia_list, histtype='stepfilled',  bins=100)
+plt.hist(dia_list, histtype='stepfilled',  bins=200)
 plt.show()
-
