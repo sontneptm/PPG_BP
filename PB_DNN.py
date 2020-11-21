@@ -47,7 +47,7 @@ with tf.device('GPU:0'):
     model.add(layers.Dense(2, activation=tf.nn.swish))
 
     model.compile(optimizer=Adam(lr=1.46e-3), loss='mse')
-    hist = model.fit(xt, yt, validation_split=0.2, shuffle=True, epochs=EPOCH)
+    hist = model.fit(xt, yt, shuffle=True, epochs=EPOCH)
     print(hist)
     model.summary()
 

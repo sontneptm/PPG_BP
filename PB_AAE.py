@@ -230,7 +230,6 @@ def train():
     # 6-3. Report
     print("[Epoch: {:04d}] {:.01f} min.".format(EPOCHS, elapsed_time))
     print(save_message)
-<<<<<<< HEAD
     """
     x_axis = range(len(ppg_data[0]))
     encoded_val_data = enc(ppg_data).numpy()
@@ -247,9 +246,6 @@ def train():
         print("실제값 : ", bp_data[i],"\t", "예측값 :", pd[i])
     
     print(r2_score(bp_data, pd))
-=======
-    
->>>>>>> parent of 4b97b9b... tmp
 
 # end of train() method
 

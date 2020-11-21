@@ -17,7 +17,7 @@ if gpus:
 
 #HyperParameter
 test_set_size = 0.8 #학습/시험셋 분할 크기(학습셋의 비율)
-EPOCH = 1000 #학습 횟수
+EPOCH = 400 #학습 횟수
 csv_file_path = 'ppg_bp_encoded.csv' #불러올 csv 파일
 predict_is_test = True #True일시 예측을 Test 셋으로 함 / False 일시 예측을 전체 데이터로 함
 
@@ -37,19 +37,20 @@ x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))  # (4,3,1) reshap
 
 # 2. 모델 구성
 model = Sequential()
-model.add(GRU(100, activation=tf.nn.swish, input_shape=(x_data.shape[1], 1)))
+#model.add(GRU(100, activation=tf.nn.swish, input_shape=(x_data.shape[1], 1)))
+model.add(LSTM(1000, activation=tf.nn.swish, input_shape=(x_data.shape[1], 1)))
 # DENSE와 사용법 동일하나 input_shape=(열, 몇개씩잘라작업)
 #model.add(GRU(100))
-model.add(Dense(128, activation=tf.nn.swish))
-model.add(Dense(256, activation=tf.nn.swish))
+model.add(Dense(1024, activation=tf.nn.swish))
 model.add(Dense(512, activation=tf.nn.swish))
+model.add(Dense(256, activation=tf.nn.swish))
 model.add(Dense(2))
 model.summary()
 
 # 3. 실행 epoch 반복 횟수
 #opimizer = rmsprop, adam  / batch_size는 데이터를 자르는 크기
 model.compile(optimizer=Adam(lr=1.46e-3), loss='mse')
-model.fit(x_train, y_train, validation_split=0.2, epochs= EPOCH) #validation_split은 학습 도중 학습할 부분과 아닌 부분을 분할하는 비율
+model.fit(x_train, y_train, epochs= EPOCH) #validation_split은 학습 도중 학습할 부분과 아닌 부분을 분할하는 비율
 
 if predict_is_test :
     x_predict = x_test
