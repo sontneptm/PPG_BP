@@ -19,7 +19,7 @@ if gpus:
     except RuntimeError as e:
         print(e)
 
-xy_data = np.loadtxt("ppg_bp_encoded.csv",delimiter=',', dtype=np.float32)
+xy_data = np.loadtxt("ppg_bp_encoded_32.csv",delimiter=',', dtype=np.float32)
 xd = xy_data[:,2:]
 yd = xy_data[:,:2]
 #xd = (xd-xd.min())/(xd.max()-xd.min())
@@ -34,6 +34,8 @@ xt, xv, yt, yv = train_test_split(xd, yd, test_size = SPLIT_RATE, random_state =
 
 model = models.Sequential()
 model.add(Conv1D(filters=256, kernel_size=2, activation=tf.nn.swish, input_shape=(DATA_LEN,1)))
+model.add(MaxPooling1D(pool_size=2))
+model.add(Conv1D(filters=128, kernel_size=3, activation=tf.nn.swish))
 model.add(MaxPooling1D(pool_size=2))
 model.add(Flatten())
 model.add(Dense(500, activation=tf.nn.swish))

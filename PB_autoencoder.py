@@ -15,7 +15,7 @@ bp_data = whole_data[:,:2]
 ppg_data = whole_data[:,2:]
 #ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
 
-LATENT_DIM = 32
+LATENT_DIM = 16
 SPLIT_RATE = 0.2
 EPOCHS = 100
 PPG_LENGTH = len(ppg_data[0])
@@ -59,7 +59,7 @@ plt.plot(x_axis, decoded_val_data[5])
 plt.plot(x_axis, pv[5])
 plt.show()
 
-file = open('ppg_bp_encoded.csv','a')
+file = open('ppg_bp_encoded_16.csv','a')
 
 encoded_data = autoencoder.encoder(ppg_data).numpy()
 
