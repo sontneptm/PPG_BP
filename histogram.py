@@ -7,7 +7,12 @@ from tensorflow.keras.optimizers import Adam
 
 #불러올 모델명
 loaded_model = 'ppg_gru_model.h5'
-bp_data = np.loadtxt('ppg_bp_encoded.csv', delimiter=',') #데이터 읽어옴
+#bp_data = np.loadtxt('ppg_bp_encoded.csv', delimiter=',') #데이터 읽어옴
+bp_data = np.loadtxt('ppg_jeong_encoded.csv', delimiter=',') #데이터 읽어옴
+
+customObjects = {
+    'swish' : tf.nn.swish
+}
 
 y_data = bp_data[:, :2]
 x_data = bp_data[:, 2:]
@@ -19,10 +24,13 @@ print('x_data shape : ', x_data.shape)
 print('-------x reshape-----------')
 x_data = x_data.reshape((x_data.shape[0], x_data.shape[1], 1))
 
-model = load_model(loaded_model)
+model = load_model(loaded_model, custom_objects= customObjects)
 model.compile(optimizer=Adam(lr=1.46e-3), loss='mse')
 # 3. 모델 사용하기
 yhat = model.predict(x_data) #예측 결과
+print(yhat)
+for i in yhat :
+    print(i)
 
 sys_list = []
 dia_list = []
@@ -33,9 +41,9 @@ for i in range(len(y_data)) :
 plt.rcParams["figure.figsize"] = (7,5)
 plt.subplot(211)
 plt.title('systolic')
-plt.hist(sys_list, histtype='step')
+plt.hist(sys_list, bins = 100, histtype='step')
 
 plt.subplot(212)
 plt.title('diastolic')
-plt.hist(dia_list, histtype='stepfilled')
+plt.hist(dia_list, bins = 100,histtype='stepfilled')
 plt.show()
