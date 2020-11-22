@@ -4,9 +4,15 @@ import enum
 import json
 import time
 
+import requests
+
 class order_enum(enum.Enum):
     NO_REQUEST = 0
     JUST_MESSAGE = 1
+    EXCUTE_QUERY = 2
+    LIST_REQUEST = 3
+    WAVES = 4
+    BP = 5
 # end of class
 
 class client_handler:
@@ -23,30 +29,56 @@ class client_handler:
         self.error_msg = ""
 
     def run(self):
+        data_list = []
         print(str(self.addr) + " 에서 접속하였습니다.")
         while True:
-            self.recv_msg = self.sock.recv(1024)
+            self.recv_msg = self.sock.recv(1024).decode("utf-8")
             self.recv_msg = json.loads(self.recv_msg)
-            print(self.recv_msg)
 
+            #print(self.recv_msg)
             if self.error_msg != "":
                 self.send_msg("msg", self.error_msg)
                 self.error_msg = ""
-            if self.recv_msg != None:
+            if self.recv_msg != None and type(self.recv_msg) != type(1):
                 try:
                     if self.recv_msg.get('msg_type') == "just_message":
                         self.recieve_order(order_enum.JUST_MESSAGE)
-                    elif self.recv_msg.get('msg_type') == "insert_data":
-                        self.recieve_order(order_enum.EXCUTE_QUERY)
+                    elif self.recv_msg.get('msg_type') == "waves":
+                        #print(self.recv_msg)
+                        self.recieve_order(order_enum.WAVES)
+                    elif self.recv_msg.get('msg_type') == "bp":
+                        # print(self.recv_msg)
+                        self.recieve_order(order_enum.BP)
                     else:
                         print("unknown msg_type : " + self.recv_msg.get('msg_type'))
                 except AttributeError as e:
                     print(e)
                     self.sock.close()
                 except Exception as e:
-                    print(e + "ee")
+                    print(e, "ee")
+
+###################### 여기서 데이터리스트 만들어줌 ######################
+            else :
+                """
+                if len(data_list) < 10 :
+                    data_list.append(self.recv_msg)
+                elif len(data_list) == 10 :
+                    print(data_list)
+                    data_list.clear()
+                """
+                if len(data_list) < 10 :
+                    data_list.append(self.recv_msg)
+
+                if len(data_list)%10 == 0:
+                    print(data_list)
+                    data_list.clear()
+
+###################### 여기서 데이터리스트 만들어줌 ######################
+
             if self.destroy:
                 break
+
+
             time.sleep(0.1)
         # end of while loop
     """  you should define function here
@@ -67,10 +99,11 @@ class client_handler:
 
         self.recv_msg = None
         self.lock.release()
+
     # end of function
 
-
 # end of class
+
 
 class server_class:
     def __init__(self):
@@ -89,7 +122,7 @@ class server_class:
         self.serverSock = socket(AF_INET, SOCK_STREAM)  # IPV4 형식의 IP 형식이며, SOCK_STREAM 형식을 채택
         self.serverSock.settimeout(1) #소켓 통신에 시간 제한을 둠
         self.serverSock.bind((self.server_ip, self.server_port))  # 서버 소켓으로 사용할 IP와 포트 번호를 지정합니다.
-        self.serverSock.listen(1)  # 최대 두개의 클라이언트가 접속할 수 있습니다.
+        self.serverSock.listen(2)  # 최대 두개의 클라이언트가 접속할 수 있습니다.
 
     def waiting_start(self) :
         th = threading.Thread(target=self.connetion_thread, args=())
@@ -102,7 +135,6 @@ class server_class:
                 connectionSock, addr = self.serverSock.accept()
                 ch = client_handler(connectionSock, addr, self.lock1)
                 self.client_handler_list.append(ch)
-                print("accepted %s",addr)
             except Exception as e:
                 pass
             except socket.timeout:
