@@ -13,8 +13,13 @@ from tensorflow.keras import layers, models
 whole_data = np.loadtxt("ppg_bp_filtered.csv",delimiter=',', dtype=np.float32)
 bp_data = whole_data[:,:2]
 ppg_data = whole_data[:,2:]
+test_data = np.loadtxt("wave_data_jeong.csv",delimiter=',', dtype=np.float32)
 #ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
 
+print(len(whole_data[0]))
+print(len(test_data[0]))
+
+"""
 LATENT_DIM = 16
 SPLIT_RATE = 0.2
 EPOCHS = 100
@@ -73,3 +78,4 @@ for i in range(len(encoded_data)):
 
     rtn = str(tmp_list)[1:-1]
     file.write(str.format(rtn) + "\n")
+"""
