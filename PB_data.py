@@ -45,25 +45,33 @@ def text_to_csv():
 
 def ma_filter():
     #file = open('ppg_bp_filtered.csv','a')
-    filtered_data = np.loadtxt("ppg_bp_filtered.csv",delimiter=',', dtype=np.float32)
-    filtered_ppg = filtered_data[:, 2:]
+    #filtered_data = np.loadtxt("ppg_bp_filtered.csv",delimiter=',', dtype=np.float32)
+    #filtered_ppg = filtered_data[:, 2:]
 
+<<<<<<< HEAD
     print(np.min(filtered_ppg))
     print(np.max(filtered_ppg))
     
     
+=======
+    #scaler = MinMaxScaler(feature_range=(np.min(filtered_ppg),np.max(filtered_ppg)))
+>>>>>>> b22d864b0118a3c6cf14773b57489d67d1c8e279
 
-    file = open('ppg_jeong_filtered.csv','a')
-    whole_data = np.loadtxt("ppg_data_jeong.csv",delimiter=',', dtype=np.float32)
+    file = open('ppg_bp_filtered.csv','a')
+    whole_data = np.loadtxt("ppg_bp.csv",delimiter=',', dtype=np.float32)
     bp_data = whole_data[:,:2]
     ppg_data = whole_data[:,2:]
     
     for i in ppg_data :
         print(i)
 
+<<<<<<< HEAD
     scaler = MinMaxScaler()
     scaler.fit(ppg_data)
     ppg_data = scaler.transform(ppg_data)
+=======
+    #scaler.fit_transform(ppg_data)
+>>>>>>> b22d864b0118a3c6cf14773b57489d67d1c8e279
 
     for i in range(len(ppg_data)) :
         ppg_pd = pd.Series(ppg_data[i])
