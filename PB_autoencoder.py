@@ -13,14 +13,15 @@ from tensorflow.keras import layers, models
 whole_data = np.loadtxt("ppg_bp_filtered.csv",delimiter=',', dtype=np.float32)
 bp_data = whole_data[:,:2]
 ppg_data = whole_data[:,2:]
+ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
 test_data = np.loadtxt("ppg_jeong_filtered.csv",delimiter=',', dtype=np.float32)
 #ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
 test_data = (test_data-test_data.min())/(test_data.max()-test_data.min())
 test_ppg_data= test_data[:,2:]
 
-LATENT_DIM = 32
+LATENT_DIM = 64
 SPLIT_RATE = 0.2
-EPOCHS = 100
+EPOCHS = 200
 PPG_LENGTH = len(ppg_data[0])
 
 ppg_file = open('ppg_bp_encoded_'+ str(LATENT_DIM) +'.csv','a')
