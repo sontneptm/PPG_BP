@@ -13,10 +13,12 @@ from tensorflow.keras import layers, models
 whole_data = np.loadtxt("ppg_bp_filtered.csv",delimiter=',', dtype=np.float32)
 bp_data = whole_data[:,:2]
 ppg_data = whole_data[:,2:]
+"""
 test_data = np.loadtxt("ppg_jeong_filtered.csv",delimiter=',', dtype=np.float32)
 #ppg_data = (ppg_data-ppg_data.min())/(ppg_data.max()-ppg_data.min())
 test_data = (test_data-test_data.min())/(test_data.max()-test_data.min())
 test_ppg_data= test_data[:,2:]
+"""
 
 LATENT_DIM = 32
 SPLIT_RATE = 0.2
@@ -66,6 +68,11 @@ plt.plot(x_axis, decoded_val_data[5])
 plt.plot(x_axis, ppg_data[5])
 plt.show()
 
+autoencoder.save('ppg_autoencoder_model')
+print("모델 저장 완료")
+
+"""
+
 encoded_data = autoencoder.encoder(ppg_data).numpy()
 test_encoded_data = autoencoder.encoder(test_ppg_data).numpy()
 
@@ -88,3 +95,4 @@ for i in range(len(test_encoded_data)):
 
     rtn = str(tmp_list)[1:-1]
     test_file.write(str.format(rtn) + "\n")
+"""
