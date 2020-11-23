@@ -17,7 +17,7 @@ if gpus:
     except RuntimeError as e:
         print(e)
 
-xy_data = np.loadtxt("ppg_bp_encoded.csv",delimiter=',', dtype=np.float32)
+xy_data = np.loadtxt("ppg_bp_encoded_32.csv",delimiter=',', dtype=np.float32)
 
 xd = xy_data[:,2:]
 yd = xy_data[:,:2]
