@@ -9,6 +9,8 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import layers, losses
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers, models
+from tensorflow import keras
+from keras.models import model_from_json
 
 whole_data = np.loadtxt("ppg_bp_filtered.csv",delimiter=',', dtype=np.float32)
 bp_data = whole_data[:,:2]
@@ -19,9 +21,9 @@ test_data = np.loadtxt("ppg_jeong_filtered.csv",delimiter=',', dtype=np.float32)
 test_data = (test_data-test_data.min())/(test_data.max()-test_data.min())
 test_ppg_data= test_data[:,2:]
 
-LATENT_DIM = 64
+LATENT_DIM = 32
 SPLIT_RATE = 0.2
-EPOCHS = 200
+EPOCHS = 10
 PPG_LENGTH = len(ppg_data[0])
 
 ppg_file = open('ppg_bp_encoded_'+ str(LATENT_DIM) +'.csv','a')
@@ -80,7 +82,7 @@ for i in range(len(encoded_data)):
 
     rtn = str(tmp_list)[1:-1]
     ppg_file.write(str.format(rtn) + "\n")
-
+"""
 for i in range(len(test_encoded_data)):
     tmp_list = []
 
@@ -89,3 +91,4 @@ for i in range(len(test_encoded_data)):
 
     rtn = str(tmp_list)[1:-1]
     test_file.write(str.format(rtn) + "\n")
+"""

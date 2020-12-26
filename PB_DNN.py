@@ -59,7 +59,8 @@ with tf.device('GPU:0'):
         print("실제값 : ", yv[i],"\t", "예측값 :", pd[i])
 
     print(r2_score(yv, pd))
-    
+    model.save('ppg_dnn_model.h5')
+
     sys_list = []
     dia_list = []
     for i in range(len(yv)) :

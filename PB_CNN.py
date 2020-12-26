@@ -28,7 +28,7 @@ test_data = np.loadtxt("ppg_jeong_encoded_32.csv",delimiter=',', dtype=np.float3
 #xd = (xd-xd.min())/(xd.max()-xd.min())
 
 DATA_LEN = len(xd[0])
-EPOCH = 1000
+EPOCH = 500
 SPLIT_RATE = 0.2
 DROPOUT_RATE = 0.2
 LOAD_MODEL = False
@@ -66,6 +66,8 @@ model.summary()
 model.fit(xt, yt, epochs=EPOCH, verbose=2, callbacks=[cp_callback])
 
 pd = model.predict(xv)
+
+model.save('ppg_cnn_model.h5')
 
 #for d in pd:
     #print(d)
