@@ -3,6 +3,7 @@ import pandas as pd
 import glob
 import pandas as pd
 from scipy.stats import norm, kurtosis
+from sklearn.preprocessing import MinMaxScaler
 from collections import Counter
 
 def text_to_csv():
@@ -46,15 +47,16 @@ def ma_filter():
     #file = open('ppg_bp_filtered.csv','a')
     #filtered_data = np.loadtxt("ppg_bp_filtered.csv",delimiter=',', dtype=np.float32)
     #filtered_ppg = filtered_data[:, 2:]
-
     #scaler = MinMaxScaler(feature_range=(np.min(filtered_ppg),np.max(filtered_ppg)))
 
     file = open('ppg_bp_filtered.csv','a')
     whole_data = np.loadtxt("ppg_bp.csv",delimiter=',', dtype=np.float32)
     bp_data = whole_data[:,:2]
     ppg_data = whole_data[:,2:]
+    
+    for i in ppg_data :
+        print(i)
 
-    #scaler.fit_transform(ppg_data)
 
     for i in range(len(ppg_data)) :
         ppg_pd = pd.Series(ppg_data[i])

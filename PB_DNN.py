@@ -17,7 +17,7 @@ if gpus:
     except RuntimeError as e:
         print(e)
 
-xy_data = np.loadtxt("ppg_bp_encoded.csv",delimiter=',', dtype=np.float32)
+xy_data = np.loadtxt("ppg_bp_encoded_32.csv",delimiter=',', dtype=np.float32)
 
 xd = xy_data[:,2:]
 yd = xy_data[:,:2]
@@ -59,7 +59,8 @@ with tf.device('GPU:0'):
         print("실제값 : ", yv[i],"\t", "예측값 :", pd[i])
 
     print(r2_score(yv, pd))
-    
+    model.save('ppg_dnn_model.h5')
+
     sys_list = []
     dia_list = []
     for i in range(len(yv)) :

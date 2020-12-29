@@ -17,7 +17,7 @@ ppg_data = whole_data[:,2:]
 
 LATENT_DIM = 32
 SPLIT_RATE = 0.2
-EPOCHS = 100
+EPOCHS = 10
 PPG_LENGTH = len(ppg_data[0])
 checkpoint_path = "ppg_bp_aae/pba.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)
@@ -66,8 +66,9 @@ realtime_bp_data = whole_data[:,:2]
 realtime_ppg_data = whole_data[:,2:]
 
 
-encoded_data = autoencoder.encoder(realtime_ppg_data).numpy()
 
+encoded_data = autoencoder.encoder(realtime_ppg_data).numpy()
+print(len(encoded_data))
 for i in range(len(encoded_data)):
     tmp_list = []
     tmp_list.append(bp_data[i].tolist()[0])
